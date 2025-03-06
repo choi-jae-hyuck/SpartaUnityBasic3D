@@ -15,7 +15,6 @@ public class PlayerAniController : MonoBehaviour
 
     public void Move(Vector2 dir)
     {
-        Debug.Log(dir.magnitude);
         animator.SetBool(IsMove, dir.magnitude > 0.5f);
     }
 
