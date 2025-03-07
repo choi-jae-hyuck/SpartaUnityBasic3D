@@ -39,7 +39,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
     public bool UseStamina(float amount)
     {
-        if (stamina.curValue < 0)
+        if (stamina.curValue - amount< 0)
         {
             return false;
         }

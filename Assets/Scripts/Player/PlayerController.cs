@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     private float playerSpeed;
     public float moveSpeed;
     public float runSpeed;
+    private bool isRun;
     private Vector2 curMovementInput;
     public float jumpPower;
     public LayerMask groundLayerMask;
@@ -71,32 +72,37 @@ public class PlayerController : MonoBehaviour
 
     public void OnJumpInput(InputAction.CallbackContext context)
     {
-        if(context.phase == InputActionPhase.Started && IsGrounded())
+        if(context.phase == InputActionPhase.Started && IsGrounded() )
         {
             aniController.Jump();
-            Invoke("Jump", 0.7f);
+            //Invoke("Jump", 0.7f);
+            Jump();
         }
     }
 
     public void OnRunInput(InputAction.CallbackContext context)
     {
         if(context.phase == InputActionPhase.Performed)
-        {
-           playerSpeed = runSpeed;
+        { 
+            isRun = true;
         }
         else if(context.phase == InputActionPhase.Canceled)
         {
-            playerSpeed = moveSpeed;
+            isRun = false;
         }
     }
 
     private void Move()
     {
+        if (isRun && CharacterManager.Instance.Player.condition.UseStamina(1f))
+            playerSpeed = runSpeed;
+        else
+            playerSpeed = moveSpeed;
         
         Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
         dir *= playerSpeed; 
         dir.y = rigidbody.velocity.y;
-
+        
         rigidbody.velocity = dir;
         aniController.Move(dir);
     }
