@@ -5,7 +5,9 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
+    private float playerSpeed;
     public float moveSpeed;
+    public float runSpeed;
     private Vector2 curMovementInput;
     public float jumpPower;
     public LayerMask groundLayerMask;
@@ -27,6 +29,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        playerSpeed = moveSpeed;
         rigidbody = GetComponent<Rigidbody>();
         aniController = GetComponent<PlayerAniController>();
     }
@@ -75,11 +78,23 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnRunInput(InputAction.CallbackContext context)
+    {
+        if(context.phase == InputActionPhase.Performed)
+        {
+           playerSpeed = runSpeed;
+        }
+        else if(context.phase == InputActionPhase.Canceled)
+        {
+            playerSpeed = moveSpeed;
+        }
+    }
+
     private void Move()
     {
         
         Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
-        dir *= moveSpeed; 
+        dir *= playerSpeed; 
         dir.y = rigidbody.velocity.y;
 
         rigidbody.velocity = dir;
