@@ -6,6 +6,10 @@ public class Player : MonoBehaviour
     public PlayerController controller;
     public PlayerCondition condition;
     
+    public ItemData itemData;
+    public Action addItem;
+    
+    
 
     private void Awake()
     {
