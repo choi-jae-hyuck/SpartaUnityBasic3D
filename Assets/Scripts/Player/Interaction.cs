@@ -61,9 +61,34 @@ public class Interaction : MonoBehaviour
         if(context.phase == InputActionPhase.Started && curInteractable != null)
         {
             curInteractable.OnInteract();
+            OnUseItem();
             curInteractGameObject = null;
             curInteractable = null;
             promptText.gameObject.SetActive(false);
         }
     }
+    
+    public void OnUseItem()
+    {
+        ItemData itemData = CharacterManager.Instance.Player.itemData;
+        
+        if (itemData.type == ItemType.Consumable)
+        {
+            for (int i = 0; i < itemData.consumables.Length; i++)
+            {
+                switch (itemData.consumables[i].type)
+                {
+                    case ConsumableType.Health:
+                        CharacterManager.Instance.Player.condition.Heal(itemData.consumables[i].value); break;
+                    case ConsumableType.Stamina:
+                        CharacterManager.Instance.Player.condition.HealStamina(itemData.consumables[i].value); break;
+                    case ConsumableType.Speed:
+                        // 스피드업 코루틴
+                        break;
+                }
+            }
+            
+        }
+    }
+
 }

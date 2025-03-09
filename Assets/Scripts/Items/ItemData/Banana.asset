@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: "\uBC14\uB098\uB098"
   description: "\uC2A4\uD14C\uBBF8\uB108 \uD68C\uBCF5 \uBC14\uB098\uB098\uB098"
-  type: 0
+  type: 2
   consumables:
   - type: 1
-    value: 50
+    value: 500
