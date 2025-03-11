@@ -83,7 +83,7 @@ public class Interaction : MonoBehaviour
                     case ConsumableType.Stamina:
                         CharacterManager.Instance.Player.condition.HealStamina(itemData.consumables[i].value); break;
                     case ConsumableType.Speed:
-                        // 스피드업 코루틴
+                        CharacterManager.Instance.Player.controller.SpeedUp();
                         break;
                 }
             }

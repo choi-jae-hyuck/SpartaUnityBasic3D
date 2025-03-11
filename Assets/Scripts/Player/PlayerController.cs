@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,6 +22,12 @@ public class PlayerController : MonoBehaviour
     public float lookSensitivity; // 카메라 민감도
 
     private Vector2 mouseDelta;
+    
+    [Header("SpeedUp")]
+    private bool isSpeedUp;
+    private float speedUpDefaultTimer = 5f;
+    public float speedUpTimer = 0f;
+    private Coroutine speedUpCoroutine;
 
     [HideInInspector]
     public bool canLook = true;
@@ -43,6 +50,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
+        SpeedUpTimer();
     }
     
     private void LateUpdate()
@@ -105,6 +113,37 @@ public class PlayerController : MonoBehaviour
         
         rigidbody.velocity = dir;
         aniController.Move(dir);
+    }
+
+    public void SpeedUp()
+    {
+        isSpeedUp = true;
+        if (speedUpCoroutine != null)
+        {
+            StopCoroutine(speedUpCoroutine);
+            moveSpeed /= 2;
+            runSpeed /= 2;
+        }
+        speedUpCoroutine = StartCoroutine(SpeedUpSecond(speedUpDefaultTimer + speedUpTimer));
+    }
+
+    private void SpeedUpTimer()
+    {
+        if (isSpeedUp)
+        {
+            speedUpTimer += Time.deltaTime;
+        }
+    }
+
+    private IEnumerator SpeedUpSecond(float seconds)
+    {
+        moveSpeed *= 2;
+        runSpeed *= 2;
+        yield return new WaitForSeconds(seconds);
+        isSpeedUp = false;
+        moveSpeed /= 2;
+        runSpeed /= 2;
+        speedUpTimer = 0f;
     }
 
     private void Jump()
