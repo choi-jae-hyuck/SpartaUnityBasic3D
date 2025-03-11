@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Inventory",
+                    "name": "ChangeTPFP",
                     "type": "Button",
                     "id": "c75594ec-8b26-4991-b3f5-69a17d644a7d",
                     "expectedControlType": "Button",
@@ -145,7 +145,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Inventory",
+                    "action": "ChangeTPFP",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

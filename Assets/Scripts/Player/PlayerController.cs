@@ -14,8 +14,12 @@ public class PlayerController : MonoBehaviour
     public float jumpPower;
     public LayerMask groundLayerMask;
 
-    [Header("Look")]
-    public Transform cameraContainer;
+    [Header("Look")] 
+    public bool isFP;
+    public Transform lookTarget;
+    public Transform cameraContainerTP;
+    public Transform cameraContainerFP;
+    private float FPdist = 4f;
     public float minXLook;
     public float maxXLook;
     private float camCurXRot;
@@ -45,6 +49,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        lookTarget = transform;
     }
     
     private void FixedUpdate()
@@ -57,7 +62,11 @@ public class PlayerController : MonoBehaviour
     {
         if (canLook)
         {
-            CameraLook();
+            if(!isFP)
+                CameraLookTP();
+            else if(isFP)
+                CameraLookFP();
+                
         }
     }
 
@@ -85,6 +94,15 @@ public class PlayerController : MonoBehaviour
             aniController.Jump();
             //Invoke("Jump", 0.7f);
             Jump();
+        }
+    }
+    
+    public void OnLookChangeInput(InputAction.CallbackContext context)
+    {
+        if(context.phase == InputActionPhase.Started)
+        {
+            ChangeLook();
+            CharacterManager.Instance.Player.interaction.changeCam();
         }
     }
 
@@ -151,12 +169,21 @@ public class PlayerController : MonoBehaviour
         rigidbody.AddForce(Vector2.up * jumpPower, ForceMode.Impulse);
     }
 
-    void CameraLook()
+    void CameraLookTP()
     {
         camCurXRot += mouseDelta.y * lookSensitivity;
         camCurXRot = Mathf.Clamp(camCurXRot, minXLook, maxXLook);
-        cameraContainer.localEulerAngles = new Vector3(-camCurXRot, 0, 0);
+        cameraContainerTP.localEulerAngles = new Vector3(-camCurXRot, 0, 0);
         transform.eulerAngles += new Vector3(0, mouseDelta.x * lookSensitivity, 0);
+    }
+
+    void CameraLookFP()
+    {
+        Vector3 targetPosition = lookTarget.transform.position;
+
+        cameraContainerFP.transform.RotateAround(targetPosition, Vector3.right, -mouseDelta.y);
+        cameraContainerFP.transform.RotateAround(targetPosition, Vector3.up, mouseDelta.x);
+        cameraContainerFP.transform.LookAt(targetPosition);
     }
 
     bool IsGrounded()
@@ -177,6 +204,22 @@ public class PlayerController : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void ChangeLook()
+    {
+        if (cameraContainerTP.gameObject.activeSelf)
+        {
+            isFP = true;
+            cameraContainerTP.gameObject.SetActive(false);
+            cameraContainerFP.gameObject.SetActive(true);
+        }
+        else if (!cameraContainerTP.gameObject.activeSelf)
+        {
+            isFP = false;
+            cameraContainerTP.gameObject.SetActive(true);
+            cameraContainerFP.gameObject.SetActive(false);
+        }
     }
 
     public void ToggleCursor(bool toggle)

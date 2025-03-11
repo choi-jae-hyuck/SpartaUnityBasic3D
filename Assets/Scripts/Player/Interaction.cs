@@ -16,7 +16,8 @@ public class Interaction : MonoBehaviour
     private IInteractable curInteractable;
     
     public TextMeshProUGUI promptText;
-    private Camera camera;
+    public Camera[] TPFPcameras;
+    public Camera camera;
 
     private void Start()
     {
@@ -88,6 +89,20 @@ public class Interaction : MonoBehaviour
                 }
             }
             
+        }
+    }
+
+    public void changeCam()
+    {
+        if (!CharacterManager.Instance.Player.controller.isFP)
+        {
+            maxCheckDistance = 3f;
+            camera = Camera.main;
+        }
+        else if(CharacterManager.Instance.Player.controller.isFP)
+        {
+            maxCheckDistance = 20f;
+            camera = TPFPcameras[1];
         }
     }
 
