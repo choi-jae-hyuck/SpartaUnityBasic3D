@@ -49,7 +49,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        lookTarget = transform;
     }
     
     private void FixedUpdate()
@@ -124,8 +123,19 @@ public class PlayerController : MonoBehaviour
             playerSpeed = runSpeed;
         else
             playerSpeed = moveSpeed;
+
+        Vector3 dir;
+        if (isFP &&  curMovementInput != Vector2.zero)
+        {
+            Vector3 lookFoward = new Vector3(cameraContainerFP.forward.x, 0f, cameraContainerFP.forward.z).normalized;
+            Vector3 lookRight = new Vector3(cameraContainerFP.right.x, 0f, cameraContainerFP.right.z).normalized;
+            dir = lookFoward * curMovementInput.y + lookRight * curMovementInput.x;
+            Quaternion viewRot = Quaternion.LookRotation(dir.normalized);
+            lookTarget.rotation = Quaternion.Lerp(lookTarget.rotation, viewRot, Time.deltaTime * 20f);
+        }
+        else
+            dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
         
-        Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
         dir *= playerSpeed; 
         dir.y = rigidbody.velocity.y;
         
@@ -181,8 +191,8 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 targetPosition = lookTarget.transform.position;
 
-        cameraContainerFP.transform.RotateAround(targetPosition, Vector3.right, -mouseDelta.y);
-        cameraContainerFP.transform.RotateAround(targetPosition, Vector3.up, mouseDelta.x);
+        cameraContainerFP.transform.RotateAround(targetPosition, Vector3.right, -mouseDelta.y * lookSensitivity);
+        cameraContainerFP.transform.RotateAround(targetPosition, Vector3.up, mouseDelta.x * lookSensitivity);
         cameraContainerFP.transform.LookAt(targetPosition);
     }
 
