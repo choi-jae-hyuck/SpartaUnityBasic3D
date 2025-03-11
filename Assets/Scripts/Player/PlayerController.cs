@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
         dir.y = rigidbody.velocity.y;
         
         rigidbody.velocity = dir;
-        aniController.Move(dir);
+        aniController.Move(curMovementInput);
     }
 
     public void SpeedUp()
